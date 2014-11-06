@@ -91,7 +91,7 @@ void DrawBackground(void)
 {
 	struct graph_info *graph;
 
-	LCD_SetTextColor(LCD_COLOR_WHITE);
+	LCD_SetTextColor(LCD_COLOR_BLUE);
 	for (graph = fence_info; graph->wl.width; graph++) {
 		LCD_DrawFullRect(graph->x, graph->y, 
 					graph->wl.width, graph->hd.height);

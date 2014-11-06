@@ -1,4 +1,4 @@
-PROJECT = traffic
+PROJECT = kj
 
 EXECUTABLE = $(PROJECT).elf
 BIN_IMAGE = $(PROJECT).bin
@@ -17,7 +17,8 @@ SIZE = $(CROSS_COMPILE)size
 
 # Cortex-M4 implements the ARMv7E-M architecture
 CPU = cortex-m4
-CFLAGS = -mcpu=$(CPU) -march=armv7e-m -mtune=cortex-m4
+CFLAGS = -mcpu=$(CPU) -march=armv7e-m -mtune=cortex-m4\
+	-DUSER_NAME=\"$(USER)\"
 CFLAGS += -mlittle-endian -mthumb
 # Need study
 CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -O0
@@ -89,9 +90,21 @@ OBJS += \
     $(PWD)/Utilities/STM32F429I-Discovery/stm32f429i_discovery_ioe.o
 
 # Traffic
-OBJS += $(PWD)/CORTEX_M4F_STM32F4/traffic/draw_graph.o
-OBJS += $(PWD)/CORTEX_M4F_STM32F4/traffic/move_car.o
-CFLAGS += -I $(PWD)/CORTEX_M4F_STM32F4/traffic/include
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/clib.o
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/filesystem.o
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/fio.o
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/hash-djb2.o
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/host.o
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/mmtest.o
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/osdebug.o
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/romfs.o
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/shell.o
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/stm32_p103.o
+OBJS += $(PWD)/CORTEX_M4F_STM32F4/src/string-util.o
+
+
+
+CFLAGS += -I $(PWD)/CORTEX_M4F_STM32F4/include
 
 CFLAGS += -DUSE_STDPERIPH_DRIVER
 CFLAGS += -I $(PWD)/CORTEX_M4F_STM32F4 \
