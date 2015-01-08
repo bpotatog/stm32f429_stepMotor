@@ -147,12 +147,133 @@ void system_logger(void *pvParameters)
     host_action(SYS_CLOSE, handle);
 }
 
+void gpio_init(){
+	// AHB clock
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOG, ENABLE);
+	
+	GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_9 | GPIO_Pin_10;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+	GPIO_Init(GPIOG, &GPIO_InitStructure);
+}
+void Delay(uint32_t volatile DelayTime_uS){
+	uint32_t DelayTime = 0;
+	DelayTime = SystemCoreClock/1000000*DelayTime_uS;
+	for(;DelayTime != 0 ; DelayTime--);
+}
+
+void clockwise(){
+	while(1){
+		GPIO_SetBits(GPIOG, GPIO_Pin_9);
+		GPIO_ResetBits(GPIOG, GPIO_Pin_10|GPIO_Pin_13|GPIO_Pin_14);
+		//Delay(1000);
+		for(int i=0 ; i<1000000 ; i++);
+		GPIO_ToggleBits(GPIOG, GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_13|GPIO_Pin_14);
+		//Delay(1000);
+		for(int i=0 ; i<1000000 ; i++);
+		/*GPIO_ResetBits(GPIOG, GPIO_Pin_9);
+		GPIO_ResetBits(GPIOG, GPIO_Pin_10);
+		GPIO_SetBits(GPIOG, GPIO_Pin_13);
+		GPIO_ResetBits(GPIOG, GPIO_Pin_14);*/
+		GPIO_ToggleBits(GPIOG, GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_13|GPIO_Pin_14);
+		//Delay(1000);
+		for(int i=0 ; i<1000000 ; i++);
+		/*GPIO_ResetBits(GPIOG, GPIO_Pin_9);
+		GPIO_ResetBits(GPIOG, GPIO_Pin_10);
+		GPIO_ResetBits(GPIOG, GPIO_Pin_13);
+		GPIO_SetBits(GPIOG, GPIO_Pin_14);*/
+		GPIO_ToggleBits(GPIOG, GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_13|GPIO_Pin_14);
+		//Delay(1000);
+		for(int i=0 ; i<1000000 ; i++);
+	}
+}
 int main()
 {
-	init_rs232();
-	enable_rs232_interrupts();
-	enable_rs232();
-	
+	//init_rs232();
+	//enable_rs232_interrupts();
+	//enable_rs232();
+	gpio_init();
+	while(1){
+		int count = 0;
+		int count2 = 0;
+		while(count2 < 1200){
+			int i=0;
+			GPIO_SetBits(GPIOG, GPIO_Pin_14);
+			GPIO_ResetBits(GPIOG, GPIO_Pin_10|GPIO_Pin_9|GPIO_Pin_13);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_SetBits(GPIOG, GPIO_Pin_13);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_ToggleBits(GPIOG, GPIO_Pin_14);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_SetBits(GPIOG, GPIO_Pin_10);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_ToggleBits(GPIOG, GPIO_Pin_13);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_SetBits(GPIOG, GPIO_Pin_9);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_ToggleBits(GPIOG, GPIO_Pin_10);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_SetBits(GPIOG, GPIO_Pin_14);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			count2++;
+		}
+		while(count < 1200){
+			int i=0;
+			GPIO_SetBits(GPIOG, GPIO_Pin_9 );
+			GPIO_ResetBits(GPIOG, GPIO_Pin_14|GPIO_Pin_13|GPIO_Pin_10);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_SetBits(GPIOG, GPIO_Pin_10);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_ToggleBits(GPIOG, GPIO_Pin_9);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_SetBits(GPIOG, GPIO_Pin_13);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_ToggleBits(GPIOG, GPIO_Pin_10);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_SetBits(GPIOG, GPIO_Pin_14);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_ToggleBits(GPIOG, GPIO_Pin_13);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			GPIO_SetBits(GPIOG, GPIO_Pin_9);
+			for(i=0 ; i<20000 ; i++){
+				__NOP();
+			}
+			count++;
+		}
+	}
 	fs_init();
 	fio_init();
 	
