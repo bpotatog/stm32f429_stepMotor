@@ -16,6 +16,8 @@
 #include "clib.h"
 #include "shell.h"
 #include "host.h"
+
+#define PHASE_DELAY 150
 /* _sromfs symbol can be found in main.ld linker script
  * it contains file system structure of test_romfs directory
  */
@@ -162,32 +164,54 @@ void gpio_init(){
 void Delay(uint32_t volatile DelayTime_uS){
 	uint32_t DelayTime = 0;
 	DelayTime = SystemCoreClock/1000000*DelayTime_uS;
-	for(;DelayTime != 0 ; DelayTime--);
+	for(;DelayTime != 0 ; DelayTime--)
+		__NOP();
 }
 
-void clockwise(){
-	while(1){
-		GPIO_SetBits(GPIOG, GPIO_Pin_9);
-		GPIO_ResetBits(GPIOG, GPIO_Pin_10|GPIO_Pin_13|GPIO_Pin_14);
-		//Delay(1000);
-		for(int i=0 ; i<1000000 ; i++);
-		GPIO_ToggleBits(GPIOG, GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_13|GPIO_Pin_14);
-		//Delay(1000);
-		for(int i=0 ; i<1000000 ; i++);
-		/*GPIO_ResetBits(GPIOG, GPIO_Pin_9);
-		GPIO_ResetBits(GPIOG, GPIO_Pin_10);
+void clockwise(int n)
+{
+	GPIO_ResetBits(GPIOG, GPIO_Pin_9 | GPIO_Pin_10 | \
+	               GPIO_Pin_13 | GPIO_Pin_14);
+	for(int i = 0; i < n; i++) {
+		GPIO_SetBits(GPIOG, GPIO_Pin_14);
+		Delay(PHASE_DELAY);
 		GPIO_SetBits(GPIOG, GPIO_Pin_13);
-		GPIO_ResetBits(GPIOG, GPIO_Pin_14);*/
-		GPIO_ToggleBits(GPIOG, GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_13|GPIO_Pin_14);
-		//Delay(1000);
-		for(int i=0 ; i<1000000 ; i++);
-		/*GPIO_ResetBits(GPIOG, GPIO_Pin_9);
-		GPIO_ResetBits(GPIOG, GPIO_Pin_10);
-		GPIO_ResetBits(GPIOG, GPIO_Pin_13);
-		GPIO_SetBits(GPIOG, GPIO_Pin_14);*/
-		GPIO_ToggleBits(GPIOG, GPIO_Pin_9|GPIO_Pin_10|GPIO_Pin_13|GPIO_Pin_14);
-		//Delay(1000);
-		for(int i=0 ; i<1000000 ; i++);
+		Delay(PHASE_DELAY);
+		GPIO_ToggleBits(GPIOG, GPIO_Pin_14);
+		Delay(PHASE_DELAY);
+		GPIO_SetBits(GPIOG, GPIO_Pin_10);
+		Delay(PHASE_DELAY);
+		GPIO_ToggleBits(GPIOG, GPIO_Pin_13);
+		Delay(PHASE_DELAY);
+		GPIO_SetBits(GPIOG, GPIO_Pin_9);
+		Delay(PHASE_DELAY);
+		GPIO_ToggleBits(GPIOG, GPIO_Pin_10);
+		Delay(PHASE_DELAY);
+		GPIO_SetBits(GPIOG, GPIO_Pin_14);
+		Delay(PHASE_DELAY);
+	}
+}
+void counterClockwise(int n)
+{
+	GPIO_ResetBits(GPIOG, GPIO_Pin_9 | GPIO_Pin_10 | \
+	               GPIO_Pin_13 | GPIO_Pin_14);
+	for(int i = 0; i < n; i++) {
+		GPIO_SetBits(GPIOG, GPIO_Pin_9);
+		Delay(PHASE_DELAY);
+		GPIO_SetBits(GPIOG, GPIO_Pin_10);
+		Delay(PHASE_DELAY);
+		GPIO_ToggleBits(GPIOG, GPIO_Pin_9);
+		Delay(PHASE_DELAY);
+		GPIO_SetBits(GPIOG, GPIO_Pin_13);
+		Delay(PHASE_DELAY);
+		GPIO_ToggleBits(GPIOG, GPIO_Pin_10);
+		Delay(PHASE_DELAY);
+		GPIO_SetBits(GPIOG, GPIO_Pin_14);
+		Delay(PHASE_DELAY);
+		GPIO_ToggleBits(GPIOG, GPIO_Pin_13);
+		Delay(PHASE_DELAY);
+		GPIO_SetBits(GPIOG, GPIO_Pin_9);
+		Delay(PHASE_DELAY);
 	}
 }
 int main()
@@ -196,87 +220,12 @@ int main()
 	//enable_rs232_interrupts();
 	//enable_rs232();
 	gpio_init();
-	while(1){
-		int count = 0;
-		int count2 = 0;
-		while(count2 < 1200){
-			int i=0;
-			GPIO_SetBits(GPIOG, GPIO_Pin_14);
-			GPIO_ResetBits(GPIOG, GPIO_Pin_10|GPIO_Pin_9|GPIO_Pin_13);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_SetBits(GPIOG, GPIO_Pin_13);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_ToggleBits(GPIOG, GPIO_Pin_14);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_SetBits(GPIOG, GPIO_Pin_10);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_ToggleBits(GPIOG, GPIO_Pin_13);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_SetBits(GPIOG, GPIO_Pin_9);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_ToggleBits(GPIOG, GPIO_Pin_10);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_SetBits(GPIOG, GPIO_Pin_14);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			count2++;
-		}
-		while(count < 1200){
-			int i=0;
-			GPIO_SetBits(GPIOG, GPIO_Pin_9 );
-			GPIO_ResetBits(GPIOG, GPIO_Pin_14|GPIO_Pin_13|GPIO_Pin_10);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_SetBits(GPIOG, GPIO_Pin_10);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_ToggleBits(GPIOG, GPIO_Pin_9);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_SetBits(GPIOG, GPIO_Pin_13);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_ToggleBits(GPIOG, GPIO_Pin_10);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_SetBits(GPIOG, GPIO_Pin_14);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_ToggleBits(GPIOG, GPIO_Pin_13);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			GPIO_SetBits(GPIOG, GPIO_Pin_9);
-			for(i=0 ; i<20000 ; i++){
-				__NOP();
-			}
-			count++;
-		}
-	}
+	//while(1){
+	//}
 	fs_init();
 	fio_init();
-	
+	clockwise(512);
+	counterClockwise(512);
 	//display the shell
 	//struct graph_info *graph;
 	LCD_Init();
